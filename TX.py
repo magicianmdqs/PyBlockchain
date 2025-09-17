@@ -99,7 +99,6 @@ class TX:
                     "input":self.input}
         },indent=4)
 
-
     def from_dict(self,tx):
         self.output = tx["output"]
         self.input = tx["input"]
