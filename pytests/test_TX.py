@@ -3,8 +3,8 @@ from pathlib import Path
 parent_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(parent_dir))
 import pytest
-from TX import TX  # Import the TX class
-from config import TAX, FEE
+from blockchain.TX import TX  # Import the TX class
+from blockchain.config import TAX, FEE
 
 # Mock Account class to represent the sender
 class MockAccount:

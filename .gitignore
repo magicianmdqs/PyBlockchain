@@ -1,3 +1,8 @@
 ./bc/staticfiles
 .idea
 .vercel
+./__pycache__
+./*/__pycache__
+./*/*/__pycache__
+./*/*/*/__pycache__
+./*/*/*/*/__pycache__

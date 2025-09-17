@@ -3,14 +3,17 @@ from Crypto.Hash import SHA256
 from Crypto.Signature import pkcs1_15
 from Crypto.PublicKey import RSA
 import json
-from TX import TX
+from .TX import TX
+import os
+private_key_path = os.path.join(os.path.dirname(__file__), "private.pem")
+public_key_path = os.path.join(os.path.dirname(__file__), "public.pem")
 
 def genesis():
     genesis_block = Block(block_no=0, owner="Genesis_Owner")
     genesis_block.last_hash = "UNKNOWN"
-    genesis_block.sign_block(private_key_path="./private.pem")
+    genesis_block.sign_block(private_key_path=private_key_path)
     genesis_block.hash = genesis_block.gen_hash()
-    genesis_block.sign_block(private_key_path="./private.pem")
+    genesis_block.sign_block(private_key_path=private_key_path)
     return genesis_block
 
 
@@ -27,7 +30,7 @@ class Block:
         #Every Block should have a ledger that keeps the record of all transactions
         #Hash is based on the block number, last_hash, tx
 
-    def sign_block(self, private_key_path="./private.pem"):
+    def sign_block(self, private_key_path=private_key_path):
         key = RSA.import_key(open(private_key_path, "r").read())
         hash_obj = SHA256.new(self.hash.encode())
         self.signature = pkcs1_15.new(key).sign(hash_obj).hex()
@@ -38,7 +41,7 @@ class Block:
     def set_hash(self):
         self.hash = self.gen_hash()
 
-    def sign_valid(self, public_key_path="public.pem"):
+    def sign_valid(self, public_key_path=public_key_path):
         try:
             key = RSA.import_key(open(public_key_path, "r").read())
             hash_obj = SHA256.new(self.hash.encode())

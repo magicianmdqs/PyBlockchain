@@ -1,7 +1,7 @@
 import datetime as dt
 import uuid
 from Crypto.Hash import SHA256
-from config import TAX, FEE
+from blockchain.config import TAX, FEE
 import json
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import hashes

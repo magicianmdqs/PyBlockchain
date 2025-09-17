@@ -4,12 +4,10 @@ from pathlib import Path
 parent_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(parent_dir))
 
-from Account import Accounts
-from cryptography.hazmat.primitives import serialization, hashes
-from cryptography.hazmat.primitives.asymmetric import ec
-from Blockchain import Blockchain
-from TX import TX
-from Block import Block
+from blockchain.Account import Accounts
+from cryptography.hazmat.primitives import serialization
+from blockchain.Blockchain import Blockchain
+from blockchain.TX import TX
 
 
 def test_Accounts():

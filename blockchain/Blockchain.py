@@ -1,9 +1,9 @@
-from Block import Block, genesis
+from .Block import Block, genesis
 import json
-from config import INITIAL_SYSTEM_BALANCE, PENDING_POOL_LIMIT
-from ledger import Ledger
-from Account import Accounts
-from TX import TX
+from .config import INITIAL_SYSTEM_BALANCE, PENDING_POOL_LIMIT, TAX, FEE
+from .ledger import Ledger
+from .Account import Accounts
+from .TX import TX
 
 
 class Blockchain:
@@ -163,6 +163,8 @@ class Blockchain:
         return bc
 
     def action(self, sender, to, amount):
+        if sender.balance < amount+amount*TAX+amount*FEE:
+            return "Insufficient Balance"
         tx = sender.send(to, amount)
         self.transact(tx)
         return tx
@@ -170,6 +172,10 @@ class Blockchain:
     def transact(self, tx):
         if not any(tx in self.chain[i].transactions for i in range(len(self.chain))):
             if tx.amount + tx.FEE + tx.TAX > self.get_balance_ledger(tx.sender_address):
+                tx.status = "Failed"
+                tx.update_tx()
+                self.faulty_txs.append(tx)
+                self.pending_transactions.remove(tx)
                 return "Insufficient Balance"
             if tx not in self.pending_transactions:
                 self.pending_transactions.append(tx)
@@ -182,6 +188,12 @@ class Blockchain:
         if self.number_of_pending_txs() >= PENDING_POOL_LIMIT:
             block = self.craft_block()
             for tx in self.pending_transactions:
+                if tx.TAX + tx.FEE + tx.amount > self.get_balance_ledger(tx.sender_address):
+                    tx.status = "Failed"
+                    tx.update_tx()
+                    self.faulty_txs.append(tx)
+                    self.pending_transactions.remove(tx)
+                    continue
                 if tx.is_valid():
                     tx.confirmation += 1
                     tx.status = "Confirmed"

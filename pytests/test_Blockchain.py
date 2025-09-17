@@ -3,14 +3,12 @@ from pathlib import Path
 
 parent_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(parent_dir))
-from Blockchain import Blockchain
-from Account import Accounts
+from blockchain.Blockchain import Blockchain
 import pytest
 import os
-import json
-from Block import Block, genesis
+from blockchain.Block import Block
 from Crypto.PublicKey import RSA
-from TX import TX
+from blockchain.TX import TX
 
 bc=Blockchain()
 accounts = bc.create_wallet()

@@ -107,13 +107,13 @@
                                 {% if item.sender_pub_key %}
                                 <div class="md:col-span-2 lg:col-span-3">
                                     <strong class="text-gray-400">Sender Public Key:</strong>
-                                    <p class="font-mono text-xs text-gray-500 break-all bg-gray-700 p-2 rounded-md mt-1">{{ item.sender_pub_key|truncatechars:100 }}</p>
+                                    <p class="font-mono text-xs text-gray-500 break-all bg-gray-700 p-2 rounded-md mt-1">{{ item.sender_pub_key }}</p>
                                 </div>
                                 {% endif %}
                                 {% if item.signature %}
                                 <div class="md:col-span-2 lg:col-span-3">
                                     <strong class="text-gray-400">Signature:</strong>
-                                    <p class="font-mono text-xs text-gray-500 break-all bg-gray-700 p-2 rounded-md mt-1">{{ item.signature|truncatechars:100 }}</p>
+                                    <p class="font-mono text-xs text-gray-500 break-all bg-gray-700 p-2 rounded-md mt-1">{{ item.signature }}</p>
                                 </div>
                                 {% endif %}
                             </div>

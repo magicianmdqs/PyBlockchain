@@ -1,16 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse
 import numpy as np
 import json
 from django.contrib import messages
-import sys
-from pathlib import Path
 
-parent_dir = Path(__file__).resolve().parent.parent.parent
-sys.path.append(str(parent_dir))
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from Blockchain import Blockchain
-from config import INITIAL_SYSTEM_BALANCE, PENDING_POOL_LIMIT
+
+from blockchain.Blockchain import Blockchain
+from blockchain.config import PENDING_POOL_LIMIT
 
 bc = Blockchain()
 account1 = bc.create_wallet()

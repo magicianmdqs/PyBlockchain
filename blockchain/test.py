@@ -1,10 +1,6 @@
-from Blockchain import Blockchain
-from Block import Block
-import numpy as np
-from Account import Accounts
-from config import *
-from TX import TX
-from Crypto.Hash import SHA256
+from blockchain.Blockchain import Blockchain
+from blockchain.Account import Accounts
+from blockchain.config import *
 
 if __name__ == "__main__":
     bc = Blockchain()

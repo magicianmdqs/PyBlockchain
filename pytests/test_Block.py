@@ -1,8 +1,7 @@
 import pytest
 import os
-from Block import Block, genesis  # adjust import if file name is different
+from blockchain.Block import Block, genesis  # adjust import if file name is different
 from Crypto.PublicKey import RSA
-from Crypto.PublicKey.RSA import RsaKey
 
 
 @pytest.fixture(scope="module")
