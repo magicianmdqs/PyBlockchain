@@ -1,6 +1,6 @@
 django
 gunicorn
 whitenoise
-numpy
+numpy==2.2.5
 pycryptodome==3.22.0
 cryptography==44.0.2
