@@ -1,0 +1,155 @@
+* {
+    font-family: "Roboto", sans-serif, "Rubik";
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+body {
+    background: linear-gradient(-45deg, #0a0a0a, #1c1c2b, #000000, #1a0e2a);
+    background-size: 400% 400%;
+    animation: gradientShift 30s ease infinite;
+}
+
+body::before {
+    content: '';
+    background-image: url('https://images.unsplash.com/photo-1500229832683-55b507a36f6f?auto=format&fit=crop&w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.03;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: var(--y, 50%);
+    left: var(--x, 50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(200, 200, 200, 0.03), transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 10;
+    transition: top 0.1s linear, left 0.1s linear;
+}
+
+.eye-container {
+    display: flex;
+    gap: 20px; /* Modern alternative to margin-left */
+    padding: 20px;
+    justify-content: center; /* Centers eyes within the container */
+    align-items: center;
+}
+
+.eye {
+    width: 180px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff, #dcdcdc);
+    border: 3px solid #000;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: blink-eyed 3s infinite ease-in-out; /* Blink animation for a smoother experience */
+    box-shadow: 0 5px 10px #000, 0 10px 20px #000;
+    transition: trasform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.pupil {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #3a1e1e, #000);
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+    animation: gradient-animation 10s infinite;
+    box-shadow: 0 0 4px #000, 0 0 5px #000;
+}
+
+.pupil2 {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 15px;
+    margin-top: 15px;
+    position: absolute;
+    background: radial-gradient(circle, #221717, #000);
+    animation: pupil-scale 3s infinite alternate ease-in-out;
+    box-shadow: 0 0 1px #000, 0 0 2px #000;
+}
+
+@keyframes blink-eye {
+    0%, 100% {
+        height: 100px;
+    }
+    50% {
+        height: 60px;
+    }
+}
+
+@keyframes pupil-scale {
+    0% {
+        transform: scale(1); /* Normal size */
+    }
+    100% {
+        transform: scale(1.2); /* Slightly larger */
+    }
+}
+
+.eye:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 5px #9e9898, 0 0 10px #858282;
+    filter: brightness(1.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+@media (max-width: 640px) {
+    .eye {
+        width: 90px; /* Half width */
+        height: 45px; /* Half height */
+        border-radius: 50%;
+        border: 2px solid #111;
+        box-shadow: 0 2px 5px #000;
+    }
+
+    .pupil {
+        width: 25px; /* Half size */
+        height: 25px;
+        background: radial-gradient(circle, #4b2a2a, #000);
+        box-shadow: 0 0 3px #000;
+    }
+
+    .pupil2 {
+        width: 10px; /* Half size */
+        height: 10px;
+        margin-left: 7px; /* Scaled down from 15px */
+        margin-top: 7px;
+    }
+
+
+    /* On hover scale is optional on mobile — many mobiles don’t support hover */
+    .eye:hover {
+        transform: none;
+        box-shadow: none;
+        filter: none;
+        transition: none;
+    }
+}
+

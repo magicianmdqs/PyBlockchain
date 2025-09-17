@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %} account lookup {% endblock %}
+
+{% block body %}
+<div class="w-full max-w-md mx-auto mt-10 mb-10">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-2xl">
+        <h2 class="text-3xl font-bold text-center text-white mb-8">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 inline-block mr-2 -mt-1 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+            </svg>
+            Account Lookup
+        </h2>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-300 mb-1">Account Address</label>
+                <div class="relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="address" id="address"
+                           class="block w-full pl-10 pr-3 py-3 bg-gray-700 border border-gray-600 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white"
+                           placeholder="Enter account address (e.g., 0x...)"
+                           value="{{ request.POST.address | default:'' }}">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500 transition duration-150 ease-in-out group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transition-transform duration-150 ease-in-out group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+                Check Balance
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if address %}
+<div class="w-full max-w-lg mx-auto mt-12 mb-10">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-2xl text-white transform transition-all duration-500 ease-out scale-95 opacity-0 animate-fadeInScaleUp" style="animation-fill-mode: forwards;">
+        <h3 class="text-2xl font-semibold mb-6 text-center flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Account Details
+        </h3>
+        <div class="space-y-5">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-700/50 rounded-lg ring-1 ring-gray-700 hover:ring-indigo-500 transition-shadow duration-300 shadow-md">
+                <div class="flex items-center mb-2 sm:mb-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                    </svg>
+                    <span class="text-gray-300 font-medium">Address:</span>
+                </div>
+                <span class="font-mono text-indigo-300 text-sm break-all text-left sm:text-right ml-0 sm:ml-4">{{ address }}</span>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-700/50 rounded-lg ring-1 ring-gray-700 hover:ring-indigo-500 transition-shadow duration-300 shadow-md">
+                <div class="flex items-center mb-2 sm:mb-0">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span class="text-gray-300 font-medium">Current Balance:</span>
+                </div>
+                <div class="text-left sm:text-right ml-0 sm:ml-4">
+                    <span class="text-3xl font-bold text-green-400 tracking-tight">{{ balance }}</span>
+                    <span class="text-sm text-gray-500 ml-1">TOKENS</span>
+                </div>
+            </div>
+        </div>
+        <hr class="my-8 border-gray-700">
+        <div class="text-center">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="mt-2 text-sm text-gray-400">Information retrieved successfully.</p>
+        </div>
+    </div>
+    <style>
+        @keyframes fadeInScaleUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .animate-fadeInScaleUp {
+            animation: fadeInScaleUp 0.5s ease-out;
+        }
+    </style>
+</div>
+{% endif %}
+
+
+{% endblock %}

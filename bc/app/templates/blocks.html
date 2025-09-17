@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %} Blocks {% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <h1 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-8 text-center tracking-tight">
+        Blockchain Blocks
+    </h1>
+
+    {% for block_item in bc %}
+    <details class="bg-white shadow-xl rounded-xl overflow-hidden mb-8 group" {% if forloop.first %}open{% endif %}>
+        <summary class="flex justify-between items-center p-4 sm:p-6 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors duration-150 ease-in-out group">
+            <span class="text-xl font-semibold text-slate-800">Block #{{ block_item.block_no }}</span>
+            <svg class="w-6 h-6 text-slate-500 transform transition-transform duration-300 group-open:rotate-180"
+                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+        </summary>
+        <div class="p-4 sm:p-6 border-t border-slate-200 bg-white" x-data="{ show_sign: false }">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6 text-sm">
+                <div>
+                    <span class="font-medium text-slate-500">Timestamp:</span>
+                    <span class="text-slate-700 ml-1">{{ block_item.timestamp }}</span>
+                </div>
+                <div>
+                    <span class="font-medium text-slate-500">Owner:</span>
+                    <code class="ml-1 bg-slate-100 text-slate-700 py-0.5 px-1.5 rounded-md text-xs break-all">{{ block_item.owner }}</code>
+                </div>
+                <div class="md:col-span-2">
+                    <span class="font-medium text-slate-500">Hash:</span>
+                    <code class="ml-1 bg-slate-100 text-slate-700 py-0.5 px-1.5 rounded-md text-xs break-all block">{{ block_item.hash }}</code>
+                </div>
+                <div class="md:col-span-2">
+                    <span class="font-medium text-slate-500">Last Hash:</span>
+                    <code class="ml-1 bg-slate-100 text-slate-700 py-0.5 px-1.5 rounded-md text-xs break-all block">{{ block_item.last_hash }}</code>
+                </div>
+                {% if block_item.signature %}
+                <div class="md:col-span-2">
+                    <div class="flex items-start">
+                        <span class="font-medium text-slate-500 mr-2 shrink-0">Signature:</span>
+                        <div class="flex-grow">
+                            <template x-if="show_sign">
+                                <code class="bg-slate-100 text-slate-700 py-1 px-1.5 rounded-md text-xs break-all block">{{ block_item.signature }}</code>
+                            </template>
+                            <span x-show="!show_sign" class="text-slate-700 select-none text-xs">••••••••••</span>
+                            <button x-on:click="show_sign = !show_sign"
+                                    class="ml-2 text-xs text-indigo-600 hover:text-indigo-500 focus:outline-none underline"
+                                    x-text="show_sign ? 'Hide Signature' : 'Show Signature'">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="md:col-span-2">
+                    <span class="font-medium text-slate-500">Signature:</span>
+                    <em class="text-slate-400 ml-1 text-xs">Not signed or signature not available.</em>
+                </div>
+                {% endif %}
+            </div>
+
+            <h4 class="text-lg font-semibold text-slate-700 mt-6 mb-4 pt-4 border-t border-slate-200">Transactions</h4>
+            {% if block_item.transactions %}
+                <div class="space-y-4">
+                    {% for tx in block_item.transactions %}
+                        <details class="bg-slate-50 border border-slate-200 rounded-lg shadow-sm group overflow-hidden">
+                            <summary class="flex justify-between items-center p-3 sm:p-4 cursor-pointer hover:bg-slate-100 transition-colors duration-150 ease-in-out">
+                                <span class="font-medium text-blue-700 text-sm">
+                                    Transaction ID: <code class="text-xs text-slate-600 bg-transparent p-0 font-normal">{{ tx.id }}</code>
+                                </span>
+                                <svg class="w-4 h-4 text-slate-400 transform transition-transform duration-300 group-open:rotate-180"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </summary>
+                            <div class="p-3 sm:p-4 border-t border-slate-200 bg-white grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="border border-slate-200 rounded-md p-3 bg-slate-25">
+                                    <h5 class="font-semibold text-green-700 mb-2 text-sm">Output Data</h5>
+                                    {% if tx.output %}
+                                    <ul class="text-xs text-slate-700 space-y-1.5">
+                                        <li><strong>Type:</strong> {{ tx.output.type }}</li>
+                                        <li><strong>Amount:</strong> {{ tx.output.amount }}</li>
+                                        <li><strong>Fee:</strong> {{ tx.output.fee }}</li>
+                                        <li><strong>Taxed:</strong> {{ tx.output.taxed }}</li>
+                                        <li><strong>From:</strong> <code class="bg-slate-100 p-0.5 px-1 rounded break-all">{{ tx.output.from }}</code></li>
+                                        <li><strong>To:</strong> <code class="bg-slate-100 p-0.5 px-1 rounded break-all">{{ tx.output.to }}</code></li>
+                                        <li><strong>Timestamp:</strong> {{ tx.output.timestamp }}</li>
+                                        <li><strong>Status:</strong> {{ tx.output.status }}</li>
+                                        <li><strong>Confirmation:</strong> {{ tx.output.confirmation }}</li>
+                                        <li class="!mt-2"><strong>Signature:</strong>
+                                            <code class="block bg-slate-100 p-1.5 rounded break-all mt-0.5">{{ tx.output.signature }}</code>
+                                        </li>
+                                    </ul>
+                                    {% else %}
+                                    <p class="text-xs text-slate-500 italic">No output data for this transaction.</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="border border-slate-200 rounded-md p-3 bg-slate-25">
+                                    <h5 class="font-semibold text-sky-700 mb-2 text-sm">Input Data</h5>
+                                    {% if tx.input %}
+                                    <ul class="text-xs text-slate-700 space-y-1.5">
+                                        <li><strong>Type:</strong> {{ tx.input.type }}</li>
+                                        <li><strong>Amount:</strong> {{ tx.input.amount }}</li>
+                                        <li><strong>From:</strong> <code class="bg-slate-100 p-0.5 px-1 rounded break-all">{{ tx.input.from }}</code></li>
+                                        <li><strong>To:</strong> <code class="bg-slate-100 p-0.5 px-1 rounded break-all">{{ tx.input.to }}</code></li>
+                                        <li><strong>Timestamp:</strong> {{ tx.input.timestamp }}</li>
+                                        <li><strong>Status:</strong> {{ tx.input.status }}</li>
+                                        <li><strong>Confirmation:</strong> {{ tx.input.confirmation }}</li>
+                                        <li class="!mt-2"><strong>Signature:</strong>
+                                            <code class="block bg-slate-100 p-1.5 rounded break-all mt-0.5">{{ tx.input.signature }}</code>
+                                        </li>
+                                    </ul>
+                                    {% else %}
+                                    <p class="text-xs text-slate-500 italic">No input data for this transaction.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </details>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-sm text-slate-500 italic">No transactions in this block.</p>
+            {% endif %}
+        </div>
+    </details>
+    {% empty %}
+    <div class="text-center py-12 bg-white shadow-md rounded-lg">
+        <svg class="mx-auto h-12 w-12 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10.5 11.25h3M12 17.25V11.25" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5H20.25m-16.5 0V6a2.25 2.25 0 012.25-2.25h12A2.25 2.25 0 0120.25 6v1.5" />
+        </svg>
+        <h3 class="mt-2 text-lg font-semibold text-slate-800">No Blocks Found</h3>
+        <p class="mt-1 text-sm text-slate-600">There are currently no blocks in the blockchain to display.</p>
+        <p class="mt-1 text-sm text-slate-500">Try generating some blocks from the control panel.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

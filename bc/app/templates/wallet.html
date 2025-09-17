@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block title %} My Wallet {% endblock %}
+
+{% block body %}
+<div class="bg-slate-100 min-h-screen font-sans">
+    <div class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <header class="mb-12 text-center">
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight">
+                {% if private_key %}
+                My Wallet
+                {% else %}
+                {{address}}
+                {% endif %}
+            </h1>
+        </header>
+
+        <!-- Wallet Information Card -->
+        <section class="bg-white shadow-2xl rounded-2xl overflow-hidden mb-12 p-6 sm:p-8">
+            <h2 class="text-3xl font-bold text-indigo-700 mb-8 pb-4 border-b border-slate-200">Wallet Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 text-base">
+                <div>
+                    <span class="font-semibold text-slate-600 block mb-1.5">Address:</span>
+                    <code class="bg-indigo-50 text-indigo-800 py-2 px-3 rounded-lg text-sm break-all block w-full font-mono shadow-sm select-all">{{ address }}</code>
+                </div>
+                <div>
+                    <span class="font-semibold text-slate-600 block mb-1.5">Balance:</span>
+                    <span class="text-indigo-600 font-extrabold text-3xl">{{ balance }} <span class="text-lg font-medium text-slate-500">COIN</span></span>
+                </div>
+                <div class="md:col-span-2" x-data="{ show_pk: false }">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="font-semibold text-slate-600">Public Key:</span>
+                        <button @click="show_pk = !show_pk"
+                                class="flex items-center text-sm text-indigo-600 hover:text-indigo-500 font-medium focus:outline-none transition-colors duration-150">
+                            <svg x-show="!show_pk" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                            <svg x-show="show_pk" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.242M9.879 9.879l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                            <span x-text="show_pk ? 'Hide' : 'Show'"></span>
+                        </button>
+                    </div>
+                    <template x-if="show_pk">
+                        <code class="bg-indigo-50 text-indigo-800 py-2 px-3 rounded-lg text-xs break-all block w-full font-mono shadow-sm select-all">{{ public_key }}</code>
+                    </template>
+                    <span x-show="!show_pk" class="text-slate-700 select-none text-sm leading-relaxed block bg-slate-100 p-2 rounded-md font-mono tracking-widest">••••••••••••••••••••••••••••••••••••••••••••••••••</span>
+                </div>
+                {% if private_key %}
+                <div class="md:col-span-2 mt-6 pt-6 border-t border-slate-200" x-data="{ show_private_key_section: false }">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-slate-600">Private Key:</span>
+                        <button @click="show_private_key_section = !show_private_key_section"
+                                class="text-sm font-medium px-3 py-1.5 rounded-lg focus:outline-none transition-all duration-200 ease-in-out flex items-center"
+                                :class="show_private_key_section ? 'bg-red-100 text-red-700 hover:bg-red-200 shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 shadow-sm'">
+                            <svg x-show="!show_private_key_section" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            <svg x-show="show_private_key_section" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            <span x-text="show_private_key_section ? 'Hide Private Key' : 'Show Private Key'"></span>
+                        </button>
+                    </div>
+
+                    <template x-if="show_private_key_section">
+                        <div class="mt-3 p-4 bg-red-50 border-l-4 border-red-500 rounded-md shadow-lg">
+                            <div class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2.5 text-red-500 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.216 3.031-1.742 3.031H4.42c-1.526 0-2.492-1.697-1.742-3.031l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1.75-4.5a1 1 0 00-1 1v3a1 1 0 002 0v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                <p class="text-sm text-red-700 font-medium">
+                                    <strong class="block">Security Warning:</strong> Revealing your private key can lead to irreversible loss of assets.
+                                    Ensure you are in a secure, private environment and understand the risks before proceeding.
+                                    Never share your private key with anyone.
+                                </p>
+                            </div>
+
+                            <div x-data="{ show_pem: false, show_hex: false }" class="space-y-4 mt-5">
+                                <!-- PEM Private Key -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-medium text-slate-700 text-sm">PEM Format:</span>
+                                        <button @click="show_pem = !show_pem"
+                                                class="text-xs text-indigo-600 hover:text-indigo-500 focus:outline-none underline font-medium"
+                                                x-text="show_pem ? 'Hide PEM' : 'Show PEM'">
+                                        </button>
+                                    </div>
+                                    <template x-if="show_pem">
+                                        <code class="bg-slate-200 text-slate-800 py-2 px-3 rounded-md text-xs break-all block w-full shadow-inner font-mono select-all">{{ private_key.0 }}</code>
+                                    </template>
+                                    <span x-show="!show_pem" class="text-slate-500 select-none text-xs leading-relaxed block bg-slate-100 p-2 rounded-md font-mono tracking-widest">••••••••••••••••••••••••••••••••••••••••••••••••••</span>
+                                </div>
+
+                                <!-- Hex Private Key -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-medium text-slate-700 text-sm">Hex Format:</span>
+                                        <button @click="show_hex = !show_hex"
+                                                class="text-xs text-indigo-600 hover:text-indigo-500 focus:outline-none underline font-medium"
+                                                x-text="show_hex ? 'Hide Hex' : 'Show Hex'">
+                                        </button>
+                                    </div>
+                                    <template x-if="show_hex">
+                                        <code class="bg-slate-200 text-slate-800 py-2 px-3 rounded-md text-xs break-all block w-full shadow-inner font-mono select-all">{{ private_key.1 }}</code>
+                                    </template>
+                                    <span x-show="!show_hex" class="text-slate-500 select-none text-xs leading-relaxed block bg-slate-100 p-2 rounded-md font-mono tracking-widest">••••••••••••••••••••••••••••••••••••••••••••••••••</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Pending Transactions -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-amber-700 mb-8 pb-4 border-b border-slate-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-3 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Pending Transactions
+            </h2>
+            {% if pending_txs %}
+                <div class="space-y-4">
+                    {% for ptx in pending_txs %}
+                        <div class="bg-white shadow-lg rounded-xl p-5 border-l-4 border-amber-500">
+                            <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+                                <div class="flex-grow mb-3 sm:mb-0">
+                                    <div class="flex items-center mb-1.5">
+                                        <span class="font-semibold text-slate-700 text-lg">ID:</span>
+                                        <code class="ml-2 text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded font-mono">{{ ptx.id }}</code>
+                                    </div>
+                                    <div class="text-sm text-slate-600">
+                                        {% if ptx.output.from == address %}
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                                                SENDING
+                                            </span>
+                                            to <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ ptx.output.to }}</code>
+                                        {% else %}
+                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 border border-sky-300">
+                                                RECEIVING
+                                            </span>
+                                            from <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ ptx.output.from }}</code>
+                                        {% endif %}
+                                        <span class="ml-2">Amount: <strong class="text-slate-800">{{ ptx.output.amount }} COIN</strong></span>
+                                    </div>
+                                    <p class="mt-1 text-xs text-amber-700 font-medium">Status: {{ ptx.status|default:"Awaiting Confirmation" }}</p>
+                                </div>
+                                <div class="flex items-center space-x-3 shrink-0">
+                                    <span class="text-xs py-1 px-2.5 bg-slate-200 text-slate-700 rounded-full font-medium">Waiting for Approval</span>
+                                    {% if ptx.output.from == address %} {# Assuming only sender can revoke #}
+                                    <form method="POST" onsubmit="return confirm('Are you sure you want to revoke this transaction?');">
+                                        {% csrf_token %}
+                                        <button type="submit" id="revoked" value="{{ptx.id}}"
+                                                title="Revoke Transaction" name="revoked"
+                                                class="px-3 py-1.5 text-xs font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition-colors duration-150 ease-in-out flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            Revoke
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 bg-white shadow-lg rounded-xl border border-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.03 1.126 0 1.131.094 1.976 1.057 1.976 2.192V7.5m0 4.5h.008m-.008 0c-.041.024-.082.05-.12.076-.113.078-.202.176-.257.297M12 10.5V15m0 0V18m0-7.5V7.5m4.5 0c0-.64-.128-1.24-.354-1.82M16.5 7.5V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.126 0c-1.131.094-1.976 1.057-1.976 2.192V7.5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 110-18 9 9 0 010 18z" />
+                    </svg>
+                    <h3 class="mt-3 text-xl font-semibold text-slate-800">No Pending Transactions</h3>
+                    <p class="mt-1.5 text-base text-slate-600">You have no transactions awaiting confirmation.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Transaction History -->
+        <section>
+            <h2 class="text-3xl font-bold text-sky-700 mb-8 pb-4 border-b border-slate-200 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-3 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Transaction History
+            </h2>
+            {% if txs %}
+                <div class="space-y-5">
+                    {% for tx in txs %}
+                        <details class="bg-white shadow-xl rounded-xl overflow-hidden group transition-all duration-300 ease-in-out border border-slate-200 hover:shadow-2xl">
+                            <summary class="flex justify-between items-center p-5 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors duration-150 ease-in-out group">
+                                <div class="flex-grow">
+                                    <span class="font-semibold text-blue-700 text-lg flex items-center">
+                                        Transaction:
+                                        <code class="ml-2 text-xs text-slate-600 bg-slate-200 px-2 py-0.5 rounded-md font-mono">{{ tx.id }}</code>
+                                    </span>
+                                    <div class="text-sm text-slate-600 mt-2">
+                                        {% if tx.output.from == address %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase bg-red-100 text-red-700 border border-red-300 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                                                Sent
+                                            </span>
+                                            to <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ tx.output.to }}</code>
+                                            Amount: <span class="font-bold text-slate-800">{{ tx.output.amount }}</span>
+                                            {% if tx.output.fee > 0 %}
+                                            <span class="text-slate-500 text-xs">(Fee: {{ tx.output.fee }} Tax: {{ tx.TAX }})</span>
+                                            {% endif %}
+                                        {% elif tx.output.to == address %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700 border border-green-300 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                                Received
+                                            </span>
+                                            from <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ tx.output.from }}</code>
+                                            Amount: <span class="font-bold text-slate-800">{{ tx.output.amount }}</span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase bg-gray-100 text-gray-700 border border-gray-300 shadow-sm">
+                                                Involved
+                                            </span>
+                                            Amount: <span class="font-bold text-slate-800">{{ tx.output.amount }}</span>
+                                            From: <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ tx.output.from }}</code>
+                                            To: <code class="bg-slate-100 text-slate-700 p-1 px-1.5 rounded break-all font-mono">{{ tx.output.to }}</code>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <svg class="w-6 h-6 text-slate-500 transform transition-transform duration-300 group-open:rotate-180 ml-4 shrink-0"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </summary>
+                            <div class="p-5 border-t border-slate-200 bg-white grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
+                                <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h5 class="font-bold text-green-700 mb-3 text-base flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                        Output Data
+                                    </h5>
+                                    {% if tx.output %}
+                                    <ul class="text-slate-700 space-y-2 text-xs">
+                                        <li class="flex justify-between"><strong class="text-slate-500">Type:</strong> <span>{{ tx.output.type }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Amount:</strong> <span class="font-semibold">{{ tx.output.amount }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Fee:</strong> <span>{{ tx.output.fee }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Taxed:</strong> <span>{{ tx.output.taxed }}</span></li>
+                                        <li class="flex justify-between items-start"><strong class="text-slate-500 shrink-0 mr-2">From:</strong> <code class="bg-slate-200 p-1 px-1.5 rounded break-all font-mono text-right">{{ tx.output.from }}</code></li>
+                                        <li class="flex justify-between items-start"><strong class="text-slate-500 shrink-0 mr-2">To:</strong> <code class="bg-slate-200 p-1 px-1.5 rounded break-all font-mono text-right">{{ tx.output.to }}</code></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Timestamp:</strong> <span>{{ tx.output.timestamp }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Confirmation:</strong> <span>{{ tx.output.confirmation }}</span></li>
+                                        <li class="!mt-3 pt-2 border-t border-slate-200"><strong class="text-slate-500 block mb-1">Signature:</strong>
+                                            <code class="block bg-slate-200 p-1.5 rounded break-all font-mono text-slate-600">{{ tx.output.signature }}</code>
+                                        </li>
+                                    </ul>
+                                    {% else %}
+                                    <p class="italic text-slate-500">No output data for this transaction.</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="border border-slate-200 rounded-lg p-4 bg-slate-50 shadow-sm">
+                                    <h5 class="font-bold text-sky-700 mb-3 text-base flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        Input Data
+                                    </h5>
+                                    {% if tx.input %}
+                                    <ul class="text-slate-700 space-y-2 text-xs">
+                                        <li class="flex justify-between"><strong class="text-slate-500">Type:</strong> <span>{{ tx.input.type }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Amount:</strong> <span class="font-semibold">{{ tx.input.amount }}</span></li>
+                                        <li class="flex justify-between items-start"><strong class="text-slate-500 shrink-0 mr-2">From:</strong> <code class="bg-slate-200 p-1 px-1.5 rounded break-all font-mono text-right">{{ tx.input.from }}</code></li>
+                                        <li class="flex justify-between items-start"><strong class="text-slate-500 shrink-0 mr-2">To:</strong> <code class="bg-slate-200 p-1 px-1.5 rounded break-all font-mono text-right">{{ tx.input.to }}</code></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Timestamp:</strong> <span>{{ tx.input.timestamp }}</span></li>
+                                        <li class="flex justify-between"><strong class="text-slate-500">Confirmation:</strong> <span>{{ tx.input.confirmation }}</span></li>
+                                        <li class="!mt-3 pt-2 border-t border-slate-200"><strong class="text-slate-500 block mb-1">Signature:</strong>
+                                            <code class="block bg-slate-200 p-1.5 rounded break-all font-mono text-slate-600">{{ tx.input.signature }}</code>
+                                        </li>
+                                    </ul>
+                                    {% else %}
+                                    <p class="italic text-slate-500">No input data for this transaction.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </details>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-16 bg-white shadow-xl rounded-2xl border border-slate-200">
+                    <svg class="mx-auto h-20 w-20 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h7.5M8.25 12h7.5m-7.5 5.25h7.5M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 17.25h.007v.008H3.75v-1.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 3.75h15A2.25 2.25 0 0121.75 6v12a2.25 2.25 0 01-2.25 2.25h-15A2.25 2.25 0 012.25 18V6A2.25 2.25 0 014.5 3.75z" />
+                    </svg>
+                    <h3 class="mt-4 text-2xl font-semibold text-slate-800">No Transactions Found</h3>
+                    <p class="mt-2 text-base text-slate-600">This wallet has no transaction history yet. Start transacting to see your history here.</p>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

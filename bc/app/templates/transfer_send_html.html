@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %} TX SEND {% endblock %}
+
+{% block body %}
+<div class="bg-slate-100 min-h-screen font-sans py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight">
+            Transfer Funds
+        </h1>
+
+        <section class="bg-white shadow-2xl rounded-2xl p-6 sm:p-8 mb-12">
+            <form method="post" action="{% url 'transfer_send_html' %}" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="address" class="block text-sm font-semibold text-slate-700 mb-1.5">Recipient Address:</label>
+                    <input type="text" name="address" id="address" required
+                           class="block w-full px-4 py-3 mt-1 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-colors duration-150"
+                           placeholder="Enter recipient's wallet address">
+                </div>
+                <div>
+                    <label for="amount" class="block text-sm font-semibold text-slate-700 mb-1.5">Amount (COIN):</label>
+                    <input type="number" name="amount" id="amount" step="any" required
+                           class="block w-full px-4 py-3 mt-1 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-colors duration-150"
+                           placeholder="Enter amount to send">
+                </div>
+                <button type="submit"
+                        class="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 ease-in-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 -ml-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.571V11a1 1 0 112 0v5.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                    Send Transaction
+                </button>
+            </form>
+        </section>
+
+        {% if address and amount %}
+        <section class="bg-white shadow-2xl rounded-2xl p-6 sm:p-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-indigo-700 mb-6 pb-4 border-b border-slate-200">
+                Transaction Submission Result
+            </h2>
+
+            <div class="space-y-3 mb-6 text-sm">
+                <div class="flex flex-col sm:flex-row sm:justify-between">
+                    <strong class="font-semibold text-slate-600 mb-1 sm:mb-0">Recipient Address:</strong>
+                    <code class="bg-slate-100 text-indigo-700 px-2 py-1 rounded font-mono break-all sm:text-right">{{ address }}</code>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:justify-between">
+                    <strong class="font-semibold text-slate-600 mb-1 sm:mb-0">Amount Sent:</strong>
+                    <span class="font-mono text-slate-800 sm:text-right">{{ amount }} COIN</span>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-slate-800 mb-3">Status:</h3>
+            <div class="rounded-lg shadow-inner {% if status == "Pending" %}bg-green-50 border border-green-300{% elif tx_message.error %}bg-red-50 border border-red-300{% else %}bg-yellow-50 border border-yellow-300{% endif %} p-4">
+                {% if status == "Pending" %}
+                    <p class="font-semibold flex items-center text-green-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Transaction Submitted Successfully
+                    </p>
+                    {% if confirmation %}
+                        <p class="text-green-600 mt-2 text-sm pl-7">Details: <span class="font-mono">{{ confirmation }}</span></p>
+                    {% endif %}
+
+                    <h4 class="text-base font-semibold text-slate-700 mt-6 mb-3 pt-4 border-t border-slate-200">Transaction Output:</h4>
+                    <ul class="space-y-2 text-xs">
+                        {% for key, value in tx.output.items %}
+                            <li class="flex flex-col sm:flex-row sm:justify-between py-1 border-b border-slate-200 last:border-b-0">
+                                <strong class="text-slate-500 font-medium capitalize sm:w-1/4 mb-0.5 sm:mb-0">{{ key }}:</strong>
+                                {% if key == "signature" or key == "id" or key == "from" or key == "to" %}
+                                    <code class="text-slate-700 sm:w-3/4 sm:text-right bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono break-all">{{ value }}</code>
+                                {% elif key == "timestamp" %}
+                                     <span class="text-slate-700 sm:w-3/4 sm:text-right font-mono">{{ value|floatformat:"-6" }}</span>
+                                {% else %}
+                                    <span class="text-slate-700 sm:w-3/4 sm:text-right font-mono">{{ value }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                         <li class="flex flex-col sm:flex-row sm:justify-between py-1">
+                            <strong class="text-slate-500 font-medium capitalize sm:w-1/4 mb-0.5 sm:mb-0">Transaction ID:</strong>
+                            <code class="text-slate-700 sm:w-3/4 sm:text-right bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono break-all">{{ tx.id }}</code>
+                        </li>
+                    </ul>
+
+                {% elif tx_message.error %}
+                    <p class="font-semibold flex items-center text-red-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        Transaction Failed
+                    </p>
+                    <p class="text-red-600 mt-2 text-sm pl-7">Error: {{ tx_message.error }}</p>
+
+                    {% if tx and tx.output %}
+                    <h4 class="text-base font-semibold text-slate-700 mt-6 mb-3 pt-4 border-t border-slate-200">Attempted Transaction Output:</h4>
+                    <ul class="space-y-2 text-xs">
+                         {% for key, value in tx.output.items %}
+                            <li class="flex flex-col sm:flex-row sm:justify-between py-1 border-b border-slate-200 last:border-b-0">
+                                <strong class="text-slate-500 font-medium capitalize sm:w-1/4 mb-0.5 sm:mb-0">{{ key }}:</strong>
+                                {% if key == "signature" or key == "from" or key == "to" %}
+                                     <code class="text-slate-700 sm:w-3/4 sm:text-right bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono break-all">{{ value|default:"N/A" }}</code>
+                                {% elif key == "id" %}
+                                    {# Use tx.tx_id if available for failed transactions #}
+                                     <code class="text-slate-700 sm:w-3/4 sm:text-right bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono break-all">{{ tx.tx_id|default:value }}</code>
+                                {% elif key == "timestamp" %}
+                                     <span class="text-slate-700 sm:w-3/4 sm:text-right font-mono">{{ value|floatformat:"-6" }}</span>
+                                {% else %}
+                                    <span class="text-slate-700 sm:w-3/4 sm:text-right font-mono">{{ value }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                         {% if tx.tx_id and not tx.output.id %} {# If tx_id exists and not already displayed as 'id' from output dict #}
+                         <li class="flex flex-col sm:flex-row sm:justify-between py-1">
+                            <strong class="text-slate-500 font-medium capitalize sm:w-1/4 mb-0.5 sm:mb-0">Attempted Tx ID:</strong>
+                            <code class="text-slate-700 sm:w-3/4 sm:text-right bg-slate-100 text-indigo-700 px-1.5 py-0.5 rounded font-mono break-all">{{ tx.tx_id }}</code>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                {% else %}
+                    <p class="font-semibold flex items-center text-yellow-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Status Unknown
+                    </p>
+                    <p class="text-yellow-600 mt-2 text-sm pl-7">Raw Message:
+                        <code class="bg-slate-100 text-yellow-800 px-1.5 py-0.5 rounded font-mono text-xs break-all">{{ tx_message }}</code>
+                    </p>
+                {% endif %}
+            </div>
+        </section>
+        {% elif request.POST.address is not None and request.POST.amount is not None %}
+        <section class="bg-white shadow-2xl rounded-2xl p-6 sm:p-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-red-600 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Transaction Submission Failed
+            </h2>
+            <p class="text-slate-700">Could not process the transaction. Please ensure all fields are filled correctly and try again.</p>
+            {% if tx_message.error %}
+            <p class="text-red-700 font-medium mt-3 text-sm">
+                <strong>Error Details:</strong> {{ tx_message.error }}
+            </p>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <div class="mt-12 text-center">
+            <a href="{% url 'index' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-150 group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform transition-transform duration-300 group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
