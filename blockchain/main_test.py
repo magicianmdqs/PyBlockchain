@@ -1,8 +1,8 @@
-from Block import Block
-from Blockchain import Blockchain
-from TX import TX
-from Account import Accounts
-from ledger import Ledger
+from .Block import Block
+from .Blockchain import Blockchain
+from .TX import TX
+from .Account import Accounts
+from .ledger import Ledger
 
 bc = Blockchain()
 a=bc.create_wallet()
