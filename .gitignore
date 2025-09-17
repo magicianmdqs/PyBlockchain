@@ -1,8 +1,11 @@
 ./bc/staticfiles
 .idea
+./.idea
 .vercel
 ./__pycache__
 ./*/__pycache__
 ./*/*/__pycache__
 ./*/*/*/__pycache__
 ./*/*/*/*/__pycache__
+.env
+.gitignore
