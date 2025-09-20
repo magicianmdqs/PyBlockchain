@@ -1,4 +1,4 @@
-TOTAL_SUPPLY = 1000
+TOTAL_SUPPLY = 1012
 FEE = 0.001  # of the amount
 TAX = 0.01  # of the amount
 INITIAL_SYSTEM_BALANCE = 1012
